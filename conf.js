@@ -1,6 +1,6 @@
 let conf = {
     app: {
-        host: 'fervent-shockley-7907d8.netlify.com',
+        host: 'http://rhythm.netlify.com',
         port: 2000
     }
 }
