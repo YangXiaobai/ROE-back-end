@@ -1,6 +1,6 @@
 let conf = {
     app: {
-        host: 'http://rhythm.netlify.com',
+        host: '10.74.77.49',
         port: 2000
     }
 }
