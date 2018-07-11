@@ -22,10 +22,14 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+let server_port = process.env.PORT || 5000;
+
 https.createServer(function (req, res) {
         res.writeHead(200);
         res.end("connected");
-    }).listen(conf.app.port);
+    }).listen(server_port, function(){
+        console.log('Listening at port:' + server_port);
+    });
 
 // app.listen(conf.app.port);
 
