@@ -16,7 +16,7 @@ EndUser.prototype.init = function() {
 
     var _this = this;
 
-    var app = require('http').createServer(handler);
+    var app = require('https').createServer(handler);
     var io = require('socket.io')(app);
 
     app.listen(3000);

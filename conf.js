@@ -1,6 +1,6 @@
 let conf = {
     app: {
-        host: '10.74.77.72',
+        host: 'salty-sands-89303.herokuapp.com',
         port: 2000
     }
 }

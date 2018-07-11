@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var fs = require("fs");
+var https = require("https");
 
 var conf = require('./conf');
 
@@ -21,7 +22,12 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.listen(conf.app.port);
+https.createServer(function (req, res) {
+        res.writeHead(200);
+        res.end("connected");
+    }).listen(conf.app.port);
+
+// app.listen(conf.app.port);
 
 module.exports = {
     app: app,
