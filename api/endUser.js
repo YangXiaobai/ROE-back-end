@@ -16,7 +16,7 @@ EndUser.prototype.init = function() {
 
     var _this = this;
 
-    var app = require('https').createServer(handler);
+    var app = require('http').createServer(handler);
     var io = require('socket.io')(app);
 
     app.listen(3000);
@@ -33,24 +33,31 @@ EndUser.prototype.init = function() {
             });
     }
 
+    let clearData = function() {
+
+        userList = {};
+
+        counts = 0;
+
+    };
+
     io.on('connection', function(socket) {
 
-        let id = socket.id;
-
-        counts++;
-
-        console.log('connected: ');
-        console.log(counts);
+        let socketId = socket.id;
 
         socket.on('disconnect', function() {
 
-            counts--;
-            console.log('disconnected: ');
-            console.log(counts);
+            console.log('disconnected:', counts);
 
-            if (userList[id]) {
+            if (userList[socketId]) {
 
-                delete userList[id];
+                delete userList[socketId];
+
+                counts--;
+
+                if (!counts) {
+                    clearData();
+                }
 
             }
 
@@ -73,14 +80,24 @@ EndUser.prototype.init = function() {
                     userList: userList
                 }
 
-                let userLength = Object.keys(userList).length;
+                let userLength = 0;
+
+                for(let i in userList){
+                    if(userList[i] != -1){
+                        userLength++;
+                    }
+                }
 
                 if (userLength == counts) {
 
                     let total = 0;
 
                     for (let i in userList) {
-                        total += Number(userList[i].score);
+                        if(userList[i] != -1){
+
+                            total += Number(userList[i].score);
+
+                        }
                     }
 
                     let average = total / userLength;
@@ -114,25 +131,47 @@ EndUser.prototype.init = function() {
 
         });
 
-        _this.sys.app.post('/push', function(req, res) {
+        _this.sys.app.post('/voter', function(req, res) {
 
-            let scription = req.body;
+            var data = req.body;
 
-            scription.endpoint = 'http://localhost:8080/dpTKjWf1VJg:APA91bHa9OJddbWq-4nZab2B1kiyS4ibs8nIohr67_7VFtBWAZ7RuWxYZt3-8ZslyHkUGuWEnGRc7tx4HITDbR8lMiI3v7DtbUbmxzky9Xad6qBjQaGBBDbGSbb_HvLf7mX7YLKi7Gih_69m1Og2O0BjiWhiQcIYFA'
+            if (data) {
 
-            console.log(scription);
-            
-            webpush.sendNotification(scription, 'test').then(function(res){
-                console.log(res);
-            }).catch(error => {
-                console.error(error.stack);
-            });
+                let id = data.id;
+
+                userList[id] = -1;
+
+                counts++;
+
+                console.log('connected:', counts);
+
+                res.sendStatus(200);
+
+            }
+
+        });
+
+        _this.sys.app.post('/observer', function(req, res) {
+
+            var data = req.body;
+
+            if (data) {
+
+                let id = data.id;
+
+                res.sendStatus(200);
+
+            }
 
         });
 
         _this.sys.app.get('/reset', function(req, res) {
 
-            userList = {};
+            for(let i in userList){
+
+                userList[i] = -1;
+
+            }
 
             socket.broadcast.emit('reset', 'reset');
 

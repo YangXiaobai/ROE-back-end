@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var fs = require("fs");
-var https = require("https");
 
 var conf = require('./conf');
 
@@ -22,16 +21,16 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let server_port = process.env.PORT || 5000;
+let server_port = 2000;
 
-https.createServer(function (req, res) {
-        res.writeHead(200);
-        res.end("connected");
-    }).listen(server_port, function(){
-        console.log('Listening at port:' + server_port);
-    });
+// http.createServer(function (req, res) {
+//         res.writeHead(200);
+//         res.end("connected");
+//     }).listen(server_port, function(){
+//         console.log('Listening at port:' + server_port);
+//     });
 
-// app.listen(conf.app.port);
+app.listen(conf.app.port);
 
 module.exports = {
     app: app,
